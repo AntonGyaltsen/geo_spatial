@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.gis.geos import Polygon, Point
 from main.models import PolygonModel
 
+
 class PolygonForm(forms.Form):
     name = forms.CharField(max_length=255)
     latitude = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder': 'Latitude'}))
@@ -12,12 +13,18 @@ class PolygonForm(forms.Form):
         name = self.cleaned_data['name']
         coordinates = self.cleaned_data['coordinates']
 
-        points = [
-            Point(float(lon), float(lat)) for lon, lat in [map(float, coord.split()) for coord in coordinates.split(',')]
-        ]
+        try:
+            points = [
+                Point(float(lat), float(lon)) for lat, lon in [coord.split() for coord in coordinates.split(',')]
+            ]
 
-        if points[0] != points[-1]:
-            points.append(points[0])
+            if len(points) < 3:
+                raise ValueError("A polygon must have at least 3 points")
 
-        polygon = Polygon(points)
-        return PolygonModel.objects.create(name=name, polygon=polygon)
+            if points[0] != points[-1]:
+                points.append(points[0])
+
+            polygon = Polygon(points)
+            return PolygonModel.objects.create(name=name, polygon=polygon)
+        except ValueError as e:
+            raise forms.ValidationError(f"Invalid coordinates: {str(e)}")
