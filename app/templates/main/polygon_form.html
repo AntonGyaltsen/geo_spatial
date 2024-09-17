@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавьте полигон</title>
+    <script>
+        function addCoordinates() {
+            var lat = document.getElementById('id_latitude').value;
+            var lon = document.getElementById('id_longitude').value;
+            if (lat && lon) {
+                var textarea = document.getElementById('id_coordinates');
+                var currentText = textarea.value;
+                if (currentText) {
+                    textarea.value += ', ' + lon + ' ' + lat;
+                } else {
+                    textarea.value = lon + ' ' + lat;
+                }
+                document.getElementById('id_latitude').value = '';
+                document.getElementById('id_longitude').value = '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Добавьте полигон</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <button type="button" onclick="addCoordinates()">Добавить</button>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>
