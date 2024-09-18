@@ -2,9 +2,11 @@ from django.contrib import messages
 from django.contrib.gis.geos import Polygon
 from django.shortcuts import render, redirect
 from rest_framework import status
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from . import utils
 from .forms import PolygonForm
 from .models import PolygonModel
 from .serializers import PolygonModelSerializer
@@ -43,6 +45,12 @@ def saved_polygons_view(request):
 
 
 class PolygonList(APIView):
+
+    def get(self, request, format=None):
+        polygons = PolygonModel.objects.all()
+        serializer = PolygonModelSerializer(polygons, many=True)
+        return Response(serializer.data)
+
     def post(self, request, format=None):
         serializer = PolygonModelSerializer(data=request.data)
 
@@ -51,8 +59,9 @@ class PolygonList(APIView):
 
             coordinates = polygon_data['coordinates'][0]
 
-            adjusted_coords, crosses_antimeridian = self.adjust_coordinates_for_antimeridian(
-                coordinates)
+            adjusted_coords, crosses_antimeridian = (
+                utils.adjust_coordinates_for_antimeridian(
+                coordinates))
 
             if adjusted_coords[0] != adjusted_coords[-1]:
                 adjusted_coords.append(adjusted_coords[0])
@@ -67,17 +76,7 @@ class PolygonList(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def adjust_coordinates_for_antimeridian(self, coordinates):
-        adjusted_coords = []
-        crosses_antimeridian = False
 
-        for lon, lat in coordinates:
-            if lon > 180:
-                lon -= 360
-                crosses_antimeridian = True
-            elif lon < -180:
-                lon += 360
-                crosses_antimeridian = True
-            adjusted_coords.append((lon, lat))
-
-        return adjusted_coords, crosses_antimeridian
+class PolygonDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = PolygonModel.objects.all()
+    serializer_class = PolygonModelSerializer
