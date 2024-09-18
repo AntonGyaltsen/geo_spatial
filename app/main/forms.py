@@ -4,9 +4,8 @@ from main.models import PolygonModel
 
 
 class PolygonForm(forms.ModelForm):
-    latitude = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder': 'Latitude'}), required=False)
-    longitude = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder': 'Longitude'}), required=False)
-    coordinates = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}), required=False)
+    coordinates = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}),
+                                  required=False)
 
     class Meta:
         model = PolygonModel
@@ -15,7 +14,7 @@ class PolygonForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         coordinates = cleaned_data.get('coordinates')
-        
+
         if coordinates:
             try:
                 points = [
@@ -29,10 +28,25 @@ class PolygonForm(forms.ModelForm):
                 if points[0] != points[-1]:
                     points.append(points[0])
 
-                cleaned_data['polygon'] = Polygon(points)
+                crosses_antimeridian = False
+                adjusted_points = []
+                for point in points:
+                    lon, lat = point.x, point.y
+                    if lon > 180:
+                        lon -= 360
+                        crosses_antimeridian = True
+                    elif lon < -180:
+                        lon += 360
+                        crosses_antimeridian = True
+                    adjusted_points.append(Point(lon, lat))
+
+                cleaned_data['polygon'] = Polygon(adjusted_points)
+
+                self.instance.crosses_antimeridian = crosses_antimeridian
+
             except ValueError as e:
                 raise forms.ValidationError(f"Invalid coordinates: {str(e)}")
-        
+
         return cleaned_data
 
     def save(self, commit=True):

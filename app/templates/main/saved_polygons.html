@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Polygons</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Saved Polygons</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Polygon (Coordinates)</th>
+                <th>Crosses Antimeridian</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for polygon in polygons %}
+            <tr>
+                <td>{{ polygon.name }}</td>
+                <td>
+                    <ul>
+                        {% for coord in polygon.coordinates %}
+                            <li>{{ coord.1 }}, {{ coord.0 }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ polygon.crosses_antimeridian }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

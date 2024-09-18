@@ -1,42 +1,37 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.shortcuts import render, redirect
+
 from .forms import PolygonForm
+from .models import PolygonModel
 
 
 def polygon_view(request):
     if request.method == 'POST':
         form = PolygonForm(request.POST)
-        print(f"Submitted data: {request.POST}")
         if form.is_valid():
             try:
-                polygon = form.save(commit=False)
-                
-                coordinates = polygon.polygon.coords[0]
-                crosses_antimeridian = False
-                adjusted_coordinates = []
-
-                for lon, lat in coordinates:
-                    if lon > 180:
-                        lon -= 360
-                        crosses_antimeridian = True
-                    elif lon < -180:
-                        lon += 360
-                        crosses_antimeridian = True
-                    adjusted_coordinates.append((lon, lat))
-
-                polygon.polygon = type(polygon.polygon)(adjusted_coordinates)
-                polygon.crosses_antimeridian = crosses_antimeridian
-                polygon.save()
-
-                print(f"Polygon created: {polygon}")
+                form.save()
                 messages.success(request, 'Polygon saved successfully!')
                 return redirect('polygon_form')
             except Exception as e:
-                print(f"Error saving polygon: {str(e)}")
                 messages.error(request, f'Error saving polygon: {str(e)}')
         else:
-            print(f"Form errors: {form.errors}")
+            messages.error(request, 'Form is not valid. Please check the errors.')
     else:
         form = PolygonForm()
 
     return render(request, 'main/polygon_form.html', {'form': form})
+
+
+def saved_polygons_view(request):
+    polygons = PolygonModel.objects.all()
+
+    processed_polygons = []
+    for polygon in polygons:
+        processed_polygons.append({
+            'name': polygon.name,
+            'coordinates': polygon.polygon.coords[0],
+            'crosses_antimeridian': polygon.crosses_antimeridian,
+        })
+
+    return render(request, 'main/saved_polygons.html', {'polygons': processed_polygons})
