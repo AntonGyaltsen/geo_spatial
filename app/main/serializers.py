@@ -6,3 +6,4 @@ class PolygonModelSerializer(GeoFeatureModelSerializer):
         model = PolygonModel
         fields = ('id', 'name', 'polygon', 'crosses_antimeridian')
         geo_field = 'polygon'
+        read_only_fields = ('crosses_antimeridian',)
