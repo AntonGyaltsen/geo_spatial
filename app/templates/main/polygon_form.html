@@ -1,83 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Добавьте полигон</title>
-    <script>
-        function addCoordinates() {
-            var lat = document.getElementById('id_latitude').value;
-            var lon = document.getElementById('id_longitude').value;
-            if (lat && lon) {
-                var textarea = document.getElementById('id_coordinates');
-                var currentText = textarea.value;
-                if (currentText) {
-                    textarea.value += ', ' + lon + ' ' + lat;
-                } else {
-                    textarea.value = lon + ' ' + lat;
-                }
-            }
-        }
+  <meta charset="UTF-8">
+  <title>Добавьте полигон</title>
+  <script>
+      function addCoordinates() {
+          var lat = document.getElementById('id_latitude').value;
+          var lon = document.getElementById('id_longitude').value;
+          if (lat && lon) {
+              var textarea = document.getElementById('id_coordinates');
+              var currentText = textarea.value;
+              if (currentText) {
+                  textarea.value += ', ' + lat + ' ' + lon;
+              } else {
+                  textarea.value = lat + ' ' + lon;
+              }
+          }
+      }
 
-        function validateForm() {
-            var coordinates = document.getElementById('id_coordinates').value;
-            var points = coordinates.split(',').map(function(point) {
-                return point.trim().split(' ');
-            });
-            
-            if (points.length < 3) {
-                alert('Полигон должен иметь как минимум 3 уникальные точки.');
-                return false;
-            }
-            
+      function validateForm() {
+          var coordinates = document.getElementById('id_coordinates').value;
+          var points = coordinates.split(',').map(function (point) {
+              return point.trim().split(' ');
+          });
 
-            var firstPoint = points[0];
-            var lastPoint = points[points.length - 1];
-            if (firstPoint[0] !== lastPoint[0] || firstPoint[1] !== lastPoint[1]) {
-                coordinates += ', ' + firstPoint[0] + ' ' + firstPoint[1];
-                document.getElementById('id_coordinates').value = coordinates;
-            }
-            
-           
-            var formattedCoordinates = 'POLYGON((' + coordinates + '))';
-            document.getElementById('id_polygon').value = formattedCoordinates;
-         
-            document.getElementById('id_latitude').removeAttribute('required');
-            document.getElementById('id_longitude').removeAttribute('required');
-            
-            return true;
-        }
-    </script>
+          if (points.length < 3) {
+              alert('Полигон должен иметь как минимум 3 уникальные точки.');
+              return false;
+          }
+
+
+          var firstPoint = points[0];
+          var lastPoint = points[points.length - 1];
+          if (firstPoint[0] !== lastPoint[0] || firstPoint[1] !== lastPoint[1]) {
+              coordinates += ', ' + firstPoint[0] + ' ' + firstPoint[1];
+              document.getElementById('id_coordinates').value = coordinates;
+          }
+
+
+          var formattedCoordinates = 'POLYGON((' + coordinates + '))';
+          document.getElementById('id_polygon').value = formattedCoordinates;
+
+          document.getElementById('id_latitude').removeAttribute('required');
+          document.getElementById('id_longitude').removeAttribute('required');
+          console.log('Coordinates before submit: ', coordinates);
+          console.log('Formatted Polygon: ', formattedCoordinates);
+          return true;
+      }
+  </script>
 </head>
 <body>
-    <h1>Добавьте полигон</h1>
+<h1>Добавьте полигон</h1>
 
-    <form method="post" onsubmit="return validateForm()">
-        {% csrf_token %}
-        {{ form.name.label_tag }} {{ form.name }}
-        <br>
-        {{ form.crosses_antimeridian.label_tag }} {{ form.crosses_antimeridian }}
-        <br>
-        <label for="id_latitude">Широта:</label>
-        <input type="text" id="id_latitude" name="latitude" style="margin-left: 39px;">
-        <br>
-        <label for="id_longitude">Долгота:</label>
-        <input type="text" id="id_longitude" name="longitude" style="margin-left: 30px;">
-        <br>
-        <label for="id_coordinates" style="display: inline-block; margin-top: 10px;">Координаты:</label>
-        <textarea id="id_coordinates" name="coordinates" rows="4" cols="50" style="margin-top: 10px;"></textarea>
-        <br>
-        {{ form.polygon.as_hidden }}
-        
-        <button type="button" onclick="addCoordinates()">Добавить координаты</button>
-        <button type="submit">Сохранить полигон</button>
-    </form>
+<form method="post" onsubmit="return validateForm()">
+  {% csrf_token %}
+  {{ form.name.label_tag }} {{ form.name }}
+  <br>
+  {{ form.crosses_antimeridian.label_tag }} {{ form.crosses_antimeridian }}
+  <br>
+  <label for="id_latitude">Широта:</label>
+  <input type="text" id="id_latitude" name="latitude" style="margin-left: 39px;">
+  <br>
+  <label for="id_longitude">Долгота:</label>
+  <input type="text" id="id_longitude" name="longitude" style="margin-left: 30px;">
+  <br>
+  <label for="id_coordinates" style="display: inline-block; margin-top: 10px;">Координаты:</label>
+  <textarea id="id_coordinates" name="coordinates" rows="4" cols="50"
+            style="margin-top: 10px;"></textarea>
+  <br>
+  {{ form.polygon.as_hidden }}
 
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+  <button type="button" onclick="addCoordinates()">Добавить координаты</button>
+  <button type="submit">Сохранить полигон</button>
+</form>
+
+{% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 </body>
 </html>
