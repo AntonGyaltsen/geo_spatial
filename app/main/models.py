@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 
+
 class PolygonModel(models.Model):
     name = models.CharField(max_length=255)
     polygon = models.PolygonField()

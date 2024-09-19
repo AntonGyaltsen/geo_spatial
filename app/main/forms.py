@@ -1,25 +1,27 @@
 from django import forms
-from django.contrib.gis.geos import Polygon, Point
+from django.contrib.gis.geos import Point, Polygon
+
 from main.models import PolygonModel
 
 
 class PolygonForm(forms.ModelForm):
-    coordinates = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}),
-                                  required=False)
+    coordinates = forms.CharField(
+        widget=forms.Textarea(attrs={"readonly": "readonly"}), required=False
+    )
 
     class Meta:
         model = PolygonModel
-        fields = ['name', 'polygon']
+        fields = ["name", "polygon"]
 
     def clean(self):
         cleaned_data = super().clean()
-        coordinates = cleaned_data.get('coordinates')
+        coordinates = cleaned_data.get("coordinates")
 
         if coordinates:
             try:
                 points = [
                     Point(float(lon), float(lat))
-                    for lat, lon in (coord.split() for coord in coordinates.split(','))
+                    for lat, lon in (coord.split() for coord in coordinates.split(","))
                 ]
 
                 if len(points) < 3:
@@ -40,7 +42,7 @@ class PolygonForm(forms.ModelForm):
                         crosses_antimeridian = True
                     adjusted_points.append(Point(lon, lat))
 
-                cleaned_data['polygon'] = Polygon(adjusted_points)
+                cleaned_data["polygon"] = Polygon(adjusted_points)
 
                 self.instance.crosses_antimeridian = crosses_antimeridian
 

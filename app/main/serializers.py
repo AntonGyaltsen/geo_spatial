@@ -4,21 +4,22 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from main import utils
 from main.models import PolygonModel
 
+
 class PolygonModelSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = PolygonModel
-        fields = ('id', 'name', 'polygon', 'crosses_antimeridian')
-        geo_field = 'polygon'
-        read_only_fields = ('crosses_antimeridian',)
+        fields = ("id", "name", "polygon", "crosses_antimeridian")
+        geo_field = "polygon"
+        read_only_fields = ("crosses_antimeridian",)
 
     def update(self, instance, validated_data):
-        if 'polygon' in validated_data:
-            polygon_data = validated_data.pop('polygon')
+        if "polygon" in validated_data:
+            polygon_data = validated_data.pop("polygon")
 
-            coordinates = polygon_data['coordinates'][0]
+            coordinates = polygon_data["coordinates"][0]
             adjusted_coords, crosses_antimeridian = (
-                utils.adjust_coordinates_for_antimeridian(
-                coordinates))
+                utils.adjust_coordinates_for_antimeridian(coordinates)
+            )
 
             if adjusted_coords[0] != adjusted_coords[-1]:
                 adjusted_coords.append(adjusted_coords[0])

@@ -8,17 +8,27 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='PolygonModel',
+            name="PolygonModel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('polygon', django.contrib.gis.db.models.fields.PolygonField(srid=4326)),
-                ('crosses_antimeridian', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "polygon",
+                    django.contrib.gis.db.models.fields.PolygonField(srid=4326),
+                ),
+                ("crosses_antimeridian", models.BooleanField(default=False)),
             ],
         ),
     ]
