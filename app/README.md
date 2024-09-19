@@ -19,6 +19,33 @@ https://infinite-inlet-50264-395f1ba24098.herokuapp.com/saved-polygons/
 Проект снабжен API документацией с использованием Swagger:
 https://infinite-inlet-50264-395f1ba24098.herokuapp.com/swagger-docs/
 Проект включает в себя тесты для всех основных функций.
+Для тестирования добавления можно воспользоваться запросом:
+```
+curl -X POST https://infinite-inlet-50264-395f1ba24098.herokuapp.com/api/polygons/ \
+-H "Content-Type: application/json" \
+-d '{
+    "name": "Test Polygon 2",
+    "polygon": {
+        "type": "Polygon",
+        "coordinates": [[
+            [174.19921875000003, 69.3493386397765],
+            [204.96093750000003, 69.3493386397765],
+            [205.48828125000003, 62.103882522897884],
+            [173.67187500000003, 62.186013857194226],
+            [174.19921875000003, 69.3493386397765]
+        ]]
+    }
+}'
+```
+Для вывода всех:
+```
+curl -X GET https://infinite-inlet-50264-395f1ba24098.herokuapp.com/api/polygons/
+```
+Для вывода конкретного:
+```
+curl -X GET https://infinite-inlet-50264-395f1ba24098.herokuapp.com/api/polygon/1/
+```
+Примеры остальных методов можно увидеть в документации Swagger по ссылке выше.
 
 ## Стек технологий
 
