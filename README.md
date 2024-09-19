@@ -27,6 +27,7 @@ https://infinite-inlet-50264-395f1ba24098.herokuapp.com/swagger-docs/
 - **PostGIS** — расширение для PostgreSQL для работы с географическими данными.
 - **Heroku** — для деплоя приложения.
 - **DJ-Database-URL** — пакет для упрощённой работы с настройками баз данных.
+- **Gunicorn** — в качестве wsgi-сервера.
 
 ## Установка
 
