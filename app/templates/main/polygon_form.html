@@ -52,7 +52,8 @@
 <body>
 <h1>Добавьте полигон</h1>
 
-<form method="post" onsubmit="return validateForm()">
+<form method="post" action="{% url 'polygon_form' %}" onsubmit="return validateForm
+()">
   {% csrf_token %}
   {{ form.name.label_tag }} {{ form.name }}
   <br>
