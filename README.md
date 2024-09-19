@@ -11,7 +11,7 @@ https://infinite-inlet-50264-395f1ba24098.herokuapp.com/add-polygon/
 Сохраненные полигоны доступны по адресу:
 https://infinite-inlet-50264-395f1ba24098.herokuapp.com/saved-polygons/
 
-## API
+## REST API
 
 Присутствует 2 эндпоинта: api/polygons/ и api/polygon/<int:pk>/
 Первый используется для добавления и вывода всех имеющихся полигонов.
