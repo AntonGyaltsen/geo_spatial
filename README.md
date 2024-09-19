@@ -32,9 +32,10 @@ https://infinite-inlet-50264-395f1ba24098.herokuapp.com/swagger-docs/
 
 1. Склонируйте репозиторий:
 
-   ```bash
-   git clone https://github.com/ваш-пользователь/ваш-репозиторий.git
-   ```
+```bash
+git clone https://github.com/ваш-пользователь/ваш-репозиторий.git
+```
+
 2.	Перейдите в директорию проекта:
 
 ```
